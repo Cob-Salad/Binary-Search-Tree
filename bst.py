@@ -68,22 +68,29 @@ class BST():
 
     def height(self) -> int:
         current = self.root
-        left_count = 0
-        right_count = 0
-        while current.left is not None:
-            left_count += 1
-            current = current.left
-        current = self.root
-        while current.right is not None:
-            right_count += 1
-            current = current.right
-    
-        if left_count == right_count:
-            return left_count
-        elif left_count < right_count:
-            return right_count
-        elif left_count > right_count:
-            return left_count
+
+        if current is None:
+            return 0
+
+        q = []
+
+        q.append(current)
+        height = 0
+
+        while q:
+            node_count = len(q)
+
+            while node_count > 0:
+                node = q.pop(0)
+                if node.left is not None:
+                    q.append(node.left)
+                if node.right is not None:
+                    q.append(node.right)
+                node_count -= 1
+            height += 1
+
+        return height
+ 
 
     def count_leaves(self) -> int:
         def leaf_counter(node: Node) -> int:
@@ -112,7 +119,7 @@ class BST():
                 stack.append(current)
                 current = current.left
             elif stack:
-                current = stack.pop()
+                current = stack.pop(0)
                 serialized_str += str(current.value) + ","
                 current = current.right
             else:
@@ -126,8 +133,18 @@ class BST():
             substrings = [substring.strip() for substring in input_string.split(',')]
             return substrings
         
-        substrings = split_string_by_commas(tree)
+        def filtering(unfiltered):
+            if unfiltered == "":
+                return False
+            else:
+                return True
+
+
+        unfiltered_substrings = split_string_by_commas(tree)
+        substrings = filter(filtering , unfiltered_substrings)
         
+
+
         for i in substrings:
             self.insert(int(i))
 
